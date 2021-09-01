@@ -8,9 +8,11 @@ class LoginForm(forms.Form):
 
     def is_valid(self):
         super(LoginForm, self).is_valid()
-        user = authenticate(identifier=self.cleaned_data['identifier'], password=self.cleaned_data['password'])
-        print(user)
-        return True if user is not None else False
+        try:
+            user = authenticate(identifier=self.cleaned_data['identifier'], password=self.cleaned_data['password'])
+            return True if user is not None else False
+        except ValueError:
+            return False
 
     def getUser(self):
         return authenticate(identifier=self.cleaned_data['identifier'], password=self.cleaned_data['password'])

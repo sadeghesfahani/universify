@@ -1,4 +1,5 @@
 from django.contrib.auth import login, logout
+from django.core.checks.translation import check_setting_languages
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
@@ -18,6 +19,10 @@ class LoginView(FormView):
     def form_valid(self, form):
         login(self.request, form.getUser())
         return super(LoginView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        self.extra_context = {'error': True}
+        return super(LoginView, self).form_invalid(form)
 
 
 def logOutHandler(request):

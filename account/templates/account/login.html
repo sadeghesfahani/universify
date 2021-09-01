@@ -6,11 +6,15 @@
 
 
 {% block body %}
-
-
     <div class="card w-50 mt-4 ">
         <div class="card-header">ورود</div>
         <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    شناسه کاربری یا کلمه عبور اشتباه است
+                </div>
+            {% endif %}
+
             <form action="" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
