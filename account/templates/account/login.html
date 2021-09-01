@@ -1,0 +1,21 @@
+{% extends 'account/layout.html' %}
+
+{% block title %}
+    ورود
+{% endblock %}
+
+
+{% block body %}
+
+
+    <div class="card w-50 mt-4 ">
+        <div class="card-header">ورود</div>
+        <div class="card-body">
+            <form action="" method="post">
+                {{ form.as_p }}
+                <input type="submit">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
