@@ -16,3 +16,8 @@ class LoginForm(forms.Form):
 
     def getUser(self):
         return authenticate(identifier=self.cleaned_data['identifier'], password=self.cleaned_data['password'])
+
+
+class RegisterForm(forms.Form):
+    first_name = forms.CharField(max_length=60, label='نام')
+    last_name = forms.CharField(max_length=100, label='نام خانوادگی')
