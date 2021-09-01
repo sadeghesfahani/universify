@@ -69,6 +69,7 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    is_student = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'identifier'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
@@ -91,9 +92,10 @@ class User(AbstractBaseUser):
         if not self.is_admin:
             self.is_staff = self.isDepartmentStaff()
             self.is_superuser = self.position.is_superuser
+            self.is_student = self.position.department.is_student
             if not self.isIdentifierValid():
                 self.identifier = self.generateIdentifier()
-            # self.set_password(self.password)
+
         super(User, self).save(*args, **kwargs)
 
     def generateIdentifier(self):
@@ -125,7 +127,7 @@ class User(AbstractBaseUser):
         return False
 
     def isNone(self):
-        return False if self.identifiere is not None else True
+        return False if self.identifier is not None else True
 
     def isExist(self):
         return True if get_user_model().objects.filter(identifier=self.identifier).count == 0 else False
