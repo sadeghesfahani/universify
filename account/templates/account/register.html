@@ -1,0 +1,61 @@
+{% extends 'account/layout.html' %}
+
+{% block title %}
+    ثبت نام
+{% endblock %}
+
+
+{% block body %}
+    <div class="card w-50 mt-4 ">
+        <div class="card-header">ثبت نام</div>
+        <div class="card-body">
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    شناسه کاربری یا کلمه عبور اشتباه است
+                </div>
+            {% endif %}
+
+            <form action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <label for="faculty">دانشکده</label>
+                <select name="faculty" id="faculty" onchange="changing_fac()">
+                    <option id="none_fac">----</option>
+                    {% for fac in faculties %}
+                        <option value="">{{ fac }}</option>
+                    {% endfor %}
+                </select><br>
+                <label for="faculty">گروه آموزشی</label>
+                <select name="department" id="department" onchange="changing_dep()">
+                    <option id="select_fac">لطفا دانشکده مورد نظر را وارد کنید</option>
+                    {% for dep in departments %}
+                        <option value="">{{ dep }}</option>
+                    {% endfor %}
+                </select><br>
+                <input type="submit" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        function DisplayMenu(obj) {
+            var obj = document.getElementById(obj);
+            obj.setAttribute("hidden", "hidden");
+
+        }
+
+        function changing_fac() {
+            var fac_select = document.getElementById('faculty')
+            var option = fac_select.options[fac_select.selectedIndex];
+            DisplayMenu('none_fac')
+            var dep_select = document.getElementById('select_fac')
+            dep_select.innerHTML = 'نام گروه آموزشی'
+        }
+        function changing_dep(){
+            DisplayMenu('select_fac')
+        }
+    </script>
+{% endblock %}
