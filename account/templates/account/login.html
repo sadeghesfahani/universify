@@ -12,8 +12,9 @@
         <div class="card-header">ورود</div>
         <div class="card-body">
             <form action="" method="post">
+                {% csrf_token %}
                 {{ form.as_p }}
-                <input type="submit">
+                <input type="submit" class="btn btn-primary">
             </form>
         </div>
     </div>
