@@ -10,7 +10,7 @@ from .models import *
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm
-    success_url = reverse_lazy('account')
+    # success_url = reverse_lazy('account')
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -24,6 +24,12 @@ class LoginView(FormView):
     def form_invalid(self, form):
         self.extra_context = {'error': True}
         return super(LoginView, self).form_invalid(form)
+
+    def get_success_url(self):
+        if 'next' in self.request.GET:
+            return self.request.GET['next']
+        else:
+            return reverse_lazy('account')
 
 
 def logOutHandler(request):

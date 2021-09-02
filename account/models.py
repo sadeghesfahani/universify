@@ -1,7 +1,7 @@
 from datetime import date
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, AbstractUser
 from django.db.models import Max
 
 
@@ -61,6 +61,7 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractBaseUser):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=100)
+    avatar = models.ImageField(null=True,blank=True)
     last_login = models.DateTimeField(auto_now=True)
     email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     position = models.ForeignKey(Position, on_delete=models.CASCADE, blank=True, null=True)
