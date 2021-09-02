@@ -44,9 +44,9 @@
                     {% if user.is_authenticated %}
                         <a class="dropdown-item" href="#">صفحه کاربری</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{% url 'logout' %}">خروج</a>
+                        <a class="dropdown-item" href="{% url 'account:logout' %}">خروج</a>
                     {% else %}
-                        <a class="dropdown-item" href="{% url 'login' %}">ورود</a>
+                        <a class="dropdown-item" href="{% url 'account:login' %}">ورود</a>
                     {% endif %}
 
 
