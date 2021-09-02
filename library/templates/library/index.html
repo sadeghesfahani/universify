@@ -1,5 +1,54 @@
 {% extends 'account/layout.html' %}
 
 {% block body %}
-{{ books }}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>نام کتاب</th>
+            <th>نویسنده</th>
+            <th>تعداد باقیمانده</th>
+            <th>#</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for book in books %}
+            <tr>
+                <td>{{ book.name }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.reminded }}</td>
+                <td><a href="#" class="btn btn-primary">رزرو کتاب</a></td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+    {#{% if is_paginated %}#}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center" style="direction: ltr">
+            {% if page_obj.has_previous %}
+                <li class="page-item "><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">قبلی</a></li>
+            {% endif %}
+            {% for page in page_obj.page.num_pages %}
+                {% if page_obj.number == page %}
+                    <li class="page-item active"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+                {% else %}
+                <li class="page-item disabled"><a class="page-link" href="#">بعدی</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {#{% endif %}#}
+
+
 {% endblock %}
