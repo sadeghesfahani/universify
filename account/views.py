@@ -3,13 +3,19 @@ from django.core.checks.translation import check_setting_languages
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .forms import LoginForm, RegisterForm
 from .models import *
+from .serializers import DepartmentSerializer, PositionSerializer
 
 
 class LoginView(FormView):
     template_name = 'account/login.html'
     form_class = LoginForm
+
     # success_url = reverse_lazy('account')
 
     def dispatch(self, request, *args, **kwargs):
@@ -65,3 +71,25 @@ class RegisterView(FormView):
     # def form_invalid(self, form):
     #     self.extra_context = {'error': True}
     #     return super(RegisterView, self).form_invalid(form)
+
+
+class DepartmentList(APIView):
+
+    def get_departments(self, faculty):
+        return Department.objects.filter(faculty__name=faculty)
+
+    def get(self, request, faculty):
+        departments = self.get_departments(faculty)
+        serializer = DepartmentSerializer(departments, many=True)
+        return Response(serializer.data)
+
+
+class PositionList(APIView):
+
+    def get_positions(self, department):
+        return Position.objects.filter(department__name=department)
+
+    def get(self, request, department):
+        positions = self.get_positions(department)
+        serializer = PositionSerializer(positions, many=True)
+        return Response(serializer.data)
