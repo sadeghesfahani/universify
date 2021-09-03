@@ -1,4 +1,3 @@
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView
@@ -13,8 +12,6 @@ class BookList(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('account:login')
     template_name = 'library/index.html'
     context_object_name = 'books'
-    status = None
-    book_lent = None
 
     def get_queryset(self):
         return Book.objects.filter(faculty=self.request.user.position.department.faculty)
@@ -66,8 +63,6 @@ class HandleLendOut(LoginRequiredMixin, RedirectView):
         self.request.session['status'] = self.status
         self.request.session['book_lent'] = self.bookToLend.id
 
-    def get_queryset(self):
-        return
 
     def isAuth(self):
         if not self.request.user.is_authenticated:
@@ -80,6 +75,7 @@ class HandleLendOut(LoginRequiredMixin, RedirectView):
 class UserDashboard(LoginRequiredMixin, ListView):
     template_name = 'library/user_dashboard.html'
     context_object_name = 'books'
+    login_url = reverse_lazy('account:login')
 
     def get_queryset(self):
         return Lend.objects.filter(user=self.request.user, is_active=True)

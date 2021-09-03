@@ -1,8 +1,56 @@
 {% extends 'account/layout.html' %}
 
 {% block body %}
-    {% for book in books %}
-        {{ book }}
-    {% endfor %}
 
+
+
+
+
+
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+               aria-selected="true">داشبورد</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+               aria-selected="false">تاریخچه</a>
+        </li>
+
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>نام کتاب</th>
+                    <th>نویسنده</th>
+                    <th>تاریخ اخذ</th>
+                    <th>تاریخ عودت</th>
+                    <th>تمدید</th>
+                    <th>عودت</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for book in books %}
+                    <tr>
+                        <td>{{ book.book.name }}</td>
+                        <td>{{ book.book.author }}</td>
+                        <td>{{ book.start_date }}</td>
+                        <td>{{ book.end_date }}</td>
+                        <td><a href="" class="btn btn-primary">تمدید</a></td>
+                        <td><a href="" class="btn btn-primary">عودت</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+        </div>
+
+    </div>
 {% endblock %}
