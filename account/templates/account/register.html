@@ -11,18 +11,17 @@
         <div class="card-body">
             {% if error %}
                 <div class="alert alert-danger" role="alert">
-                    شناسه کاربری یا کلمه عبور اشتباه است
+                    رمز عبور و تکرار آن همخوانی ندارد
                 </div>
             {% endif %}
-
-            <form action="">
+            <form action="" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <label for="faculty">دانشکده</label>
                 <select name="faculty" id="faculty" onchange="changingFac()">
                     <option id="none_fac">----</option>
                     {% for fac in faculties %}
-                        <option value="{{ fac }}">{{ fac }}</option>
+                        <option id="{{ fac }}">{{ fac }}</option>
                     {% endfor %}
                 </select><br>
                 <label for="department">گروه آموزشی</label>
@@ -30,8 +29,8 @@
                     <option id="select_fac">لطفا دانشکده مورد نظر را وارد کنید</option>
                 </select><br>
                 <label for="position">وضعیت</label>
-                <select name="position" id="position" onchange="changingPos()">
-                    <option id="select_dep">لطفا گروه آموزشی مورد نظر را وارد کنید</option>
+                <select name="position" id="position">
+                    <option id="select_dep">لطفا دانشکده مورد نظر را وارد کنید</option>
                 </select><br>
                 <input type="submit" class="btn btn-primary">
             </form>
@@ -42,23 +41,31 @@
 
 {% block script %}
     <script>
-        function displayMenu(obj) {
-            const object = document.getElementById(obj);
-            object.setAttribute("hidden", "hidden");
+        const faculty_select = document.getElementById('faculty')
+        const department_select = document.getElementById('department')
+        const position_select = document.getElementById('position')
+        const dep_select = document.getElementById('select_fac')
 
+        function displayMenu(obj) {
+            let object = document.getElementById(obj);
+            if (object) {
+                object.setAttribute("hidden", "hidden");
+            }
         }
 
         function changingFac() {
-            const fac_select = document.getElementById('faculty')
-            let option = fac_select.options[fac_select.selectedIndex];
+            let option = faculty_select.options[faculty_select.selectedIndex];
             displayMenu('none_fac')
-            const dep_select = document.getElementById('select_fac')
             dep_select.innerHTML = 'نام گروه آموزشی'
-            getDeps(option.value)
+            getDeps(option.id)
+            displayMenu('select_fac')
+            displayMenu('select_dep')
         }
 
         function changingDep() {
-            displayMenu('select_fac')
+            let option = department_select.options[department_select.selectedIndex]
+            let selected_fac = faculty_select.options[faculty_select.selectedIndex]
+            getPoses(option.id, selected_fac.id)
         }
 
         async function getDeps(faculty_name) {
@@ -68,9 +75,33 @@
             loadIntoDeps(departments)
         }
 
-        function loadIntoDeps(data){
-            for (let dep of data){
-                console.log(data[0].name)
+        function loadIntoDeps(data) {
+            department_select.innerHTML = ''
+            for (let dep of data) {
+                const option = document.createElement('option')
+                option.id = dep.name
+                option.innerHTML = dep.name
+                department_select.appendChild(option)
+            }
+            let deps = department_select.options
+            let selected_fac = faculty_select.options[faculty_select.selectedIndex];
+            getPoses(deps[0].id, selected_fac.id)
+        }
+
+        async function getPoses(department_name, faculty_name) {
+            const url = '/account/position-list/' + department_name + '-' + faculty_name + '/'
+            const response = await fetch(url)
+            const positions = await response.json()
+            loadIntoPoses(positions)
+        }
+
+        function loadIntoPoses(data) {
+            position_select.innerHTML = ''
+            for (let dep of data) {
+                const option = document.createElement('option')
+                option.id = dep.name
+                option.innerHTML = dep.name
+                position_select.appendChild(option)
             }
         }
     </script>
