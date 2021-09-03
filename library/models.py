@@ -29,7 +29,8 @@ class Lend(models.Model):
     renewal = models.SmallIntegerField(default=settings.MAX_RENEWAL)
 
     def save(self, *args, **kwargs):
-        self.end_date = date.today() + timedelta(days=settings.TIME_TO_LENT)
+        if self.end_date is None:
+            self.end_date = date.today() + timedelta(days=settings.TIME_TO_LENT)
         super(Lend, self).save(*args, **kwargs)
 
     def __str__(self):

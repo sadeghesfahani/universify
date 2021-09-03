@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView
 from django.views.generic.base import TemplateView, RedirectView, View
@@ -45,11 +46,11 @@ class HandleLendOut(LoginRequiredMixin, RedirectView):
         if self.isAllowed():
             self.creatNewLend()
         self.loadSession()
-        return super(HandleLendOut, self).get(request, *args, **kwargs)
+        return super(HandleLendOut, self).post(request, *args, **kwargs)
 
     def isAllowed(self):
         if self.bookToLend.faculty == self.request.user.position.department.faculty:
-            if Lend.objects.filter(book=self.bookToLend, user=self.request.user).count() == 0:
+            if Lend.objects.filter(book=self.bookToLend, user=self.request.user, is_active=True).count() == 0:
                 if self.bookToLend.reminded >= 1:
                     if Lend.objects.filter(user=self.request.user, is_active=True).count() <= settings.MAX_LENT:
                         return True
@@ -90,5 +91,59 @@ class HandleRenewal(LoginRequiredMixin, RedirectView):
     login_url = reverse_lazy('account:login')
     url = reverse_lazy('dashboard')
 
-    def get(self, request, *args, **kwargs):
-        pass
+    def __init__(self, *args, **kwargs):
+        super(HandleRenewal, self).__init__(*args, **kwargs)
+        self.lend_object = Lend()
+        self.status = False
+
+    def post(self, request, *args, **kwargs):
+        self.lend_object = self.getLendObject()
+        if self.isAllowed():
+            self.lend_object.renewal -= 1
+            self.lend_object.save()
+
+    def getLendObject(self):
+        try:
+            return Lend.objects.get(book_id=self.request.POST.get('book_id'), user=self.request.user)
+        except Lend.DoesNotExist:
+            return HttpResponseRedirect(self.url)
+
+    def isAllowed(self):
+        return True if self.lend_object.renewal > 0 else False
+
+    def loadSession(self):
+        self.request.session['status'] = self.status
+
+
+class HandelReturn(LoginRequiredMixin, RedirectView):
+    login_url = reverse_lazy('account:login')
+    url = reverse_lazy('dashboard')
+
+    def __init__(self, *args, **kwargs):
+        super(HandelReturn, self).__init__(*args, **kwargs)
+        self.lend_object = None
+        self.status = False
+
+    def post(self, request, *args, **kwargs):
+        self.getLendObject()
+        self.lend_object.is_active = False
+        self.lend_object.save()
+        self.returnQuantityBack()
+        self.status = True
+        self.loadSession()
+        return super(HandelReturn, self).post(request, *args, **kwargs)
+
+    def getLendObject(self):
+        try:
+            self.lend_object = Lend.objects.get(id=self.request.POST.get('lend_id'))
+        except Lend.DoesNotExist:
+            print('redirected')
+            return HttpResponseRedirect(self.url)
+
+    def loadSession(self):
+        self.request.session['status'] = self.status
+
+    def returnQuantityBack(self):
+        returned_book = Book.objects.get(id=self.lend_object.book.id)
+        returned_book.quantity += 1
+        returned_book.save()

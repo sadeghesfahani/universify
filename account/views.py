@@ -29,7 +29,7 @@ class LoginView(FormView):
         if 'next' in self.request.GET:
             return self.request.GET['next']
         else:
-            return reverse_lazy('account')
+            return reverse_lazy('account:account')
 
 
 def logOutHandler(request):

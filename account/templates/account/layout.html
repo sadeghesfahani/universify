@@ -29,9 +29,24 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">خانه <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'library' %}">کتابخانه</a>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="library" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    کتابخانه
+                </a>
+                <div class="dropdown-menu" aria-labelledby="library">
+
+                        <a class="dropdown-item" href="{% url 'dashboard' %}">داشبرد</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'library' %}">لیست کتب</a>
+
+
+
+
+                </div>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/admin">ادمین</a>
             </li>

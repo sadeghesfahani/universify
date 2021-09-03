@@ -39,8 +39,22 @@
                         <td>{{ book.book.author }}</td>
                         <td>{{ book.start_date }}</td>
                         <td>{{ book.end_date }}</td>
-                        <td><a href="" class="btn btn-primary">تمدید</a></td>
-                        <td><a href="" class="btn btn-primary">عودت</a></td>
+                        <td>
+                            <form action="{% url 'renewal' %}" method="post">
+                                {% csrf_token %}
+                                <input type="text" name="lend_id" value="{{ book.id }}" class="d-none">
+                                <input type="submit" class="btn btn-primary" value="تمدید">
+                            </form>
+
+                        </td>
+                        <td>
+                            <form action="{% url 'return' %}" method="post">
+                                {% csrf_token %}
+
+                                <input type="text" name="lend_id" value="{{ book.id }}" class="d-none">
+                                <input type="submit" class="btn btn-primary" value="عودت">
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -49,7 +63,28 @@
 
         </div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>نام کتاب</th>
+                    <th>نویسنده</th>
+                    <th>تاریخ اخذ</th>
+                    <th>تاریخ عودت</th>
 
+                </tr>
+                </thead>
+                <tbody>
+                {% for book in history %}
+                    <tr>
+                        <td>{{ book.book.name }}</td>
+                        <td>{{ book.book.author }}</td>
+                        <td>{{ book.start_date }}</td>
+                        <td>{{ book.end_date }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
 
     </div>
