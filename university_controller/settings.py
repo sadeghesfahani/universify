@@ -123,3 +123,4 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'account.User'
 TIME_TO_LENT = 10
+MAX_LENT = 4

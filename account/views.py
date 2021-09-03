@@ -34,7 +34,7 @@ class LoginView(FormView):
 
 def logOutHandler(request):
     logout(request)
-    return HttpResponseRedirect(reverse('account'))
+    return HttpResponseRedirect(reverse('account:account'))
 
 
 class AccountView(TemplateView):

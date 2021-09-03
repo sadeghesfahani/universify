@@ -2,6 +2,21 @@
 
 {% block body %}
 
+    {% if status == True %}
+        <div class="alert alert-success" style="position: absolute">
+            رزرو
+            {{ book_lent }}
+            با موفقیت انجام شد
+        </div>
+    {% else %}
+        {% if status == False %}
+            <div class="alert alert-danger" style="position: absolute">
+            رزروز
+                {{ book_lent }}
+            مجاز نمی باشد
+            </div>
+        {% endif %}
+    {% endif %}
     <table class="table">
         <thead>
         <tr>
@@ -43,7 +58,7 @@
             {% endfor %}
             {% if page_obj.has_next %}
                 <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
-                {% else %}
+            {% else %}
                 <li class="page-item disabled"><a class="page-link" href="#">بعدی</a></li>
             {% endif %}
         </ul>
@@ -51,4 +66,18 @@
     {#{% endif %}#}
 
 
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        window.addEventListener('DOMContentLoaded', event => {
+            setTimeout(function () {
+                const alert_element = document.querySelector('.alert');
+                alert_element.classList.add('d-none');
+            },5000)
+        })
+
+
+    </script>
 {% endblock %}
