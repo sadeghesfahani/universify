@@ -26,6 +26,7 @@ class Lend(models.Model):
     is_active = models.BooleanField(default=True)
     start_date = models.DateField(auto_now=True)
     end_date = models.DateField()
+    renewal = models.SmallIntegerField(default=settings.MAX_RENEWAL)
 
     def save(self, *args, **kwargs):
         self.end_date = date.today() + timedelta(days=settings.TIME_TO_LENT)

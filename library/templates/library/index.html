@@ -11,9 +11,9 @@
     {% else %}
         {% if status == False %}
             <div class="alert alert-danger" style="position: absolute">
-            رزروز
+                رزروز
                 {{ book_lent }}
-            مجاز نمی باشد
+                مجاز نمی باشد
             </div>
         {% endif %}
     {% endif %}
@@ -32,7 +32,13 @@
                 <td>{{ book.name }}</td>
                 <td>{{ book.author }}</td>
                 <td>{{ book.reminded }}</td>
-                <td><a href="{% url 'lendout' book_id=book.id %}" class="btn btn-primary">رزرو کتاب</a></td>
+                <td>
+                    <form method="post" action="{% url 'lendout' %}">
+                        {% csrf_token %}
+                        <input type="text" value="{{ book.id }}" class="d-none" name="book_id">
+                        <input type="submit" class="btn btn-primary" value="رزرو کتاب"></input>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
 
@@ -75,7 +81,7 @@
             setTimeout(function () {
                 const alert_element = document.querySelector('.alert');
                 alert_element.classList.add('d-none');
-            },5000)
+            }, 5000)
         })
 
 

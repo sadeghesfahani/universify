@@ -38,9 +38,10 @@ class HandleLendOut(LoginRequiredMixin, RedirectView):
         self.bookToLend = Book()
         self.status = False
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
+        print(request.POST)
         self.isAuth()
-        self.bookToLend = Book.objects.get(pk=kwargs['book_id'])
+        self.bookToLend = Book.objects.get(pk=request.POST.get('book_id'))
         if self.isAllowed():
             self.creatNewLend()
         self.loadSession()
@@ -63,7 +64,6 @@ class HandleLendOut(LoginRequiredMixin, RedirectView):
         self.request.session['status'] = self.status
         self.request.session['book_lent'] = self.bookToLend.id
 
-
     def isAuth(self):
         if not self.request.user.is_authenticated:
             return self.handle_no_permission()
@@ -79,3 +79,16 @@ class UserDashboard(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Lend.objects.filter(user=self.request.user, is_active=True)
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super(UserDashboard, self).get_context_data(object_list=None, **kwargs)
+        context['history'] = Lend.objects.filter(user=self.request.user, is_active=False)
+        return context
+
+
+class HandleRenewal(LoginRequiredMixin, RedirectView):
+    login_url = reverse_lazy('account:login')
+    url = reverse_lazy('dashboard')
+
+    def get(self, request, *args, **kwargs):
+        pass
