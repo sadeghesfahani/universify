@@ -19,18 +19,19 @@
                 {% csrf_token %}
                 {{ form.as_p }}
                 <label for="faculty">دانشکده</label>
-                <select name="faculty" id="faculty" onchange="changing_fac()">
+                <select name="faculty" id="faculty" onchange="changingFac()">
                     <option id="none_fac">----</option>
                     {% for fac in faculties %}
-                        <option value="">{{ fac }}</option>
+                        <option value="{{ fac }}">{{ fac }}</option>
                     {% endfor %}
                 </select><br>
-                <label for="faculty">گروه آموزشی</label>
-                <select name="department" id="department" onchange="changing_dep()">
+                <label for="department">گروه آموزشی</label>
+                <select name="department" id="department" onchange="changingDep()">
                     <option id="select_fac">لطفا دانشکده مورد نظر را وارد کنید</option>
-                    {% for dep in departments %}
-                        <option value="">{{ dep }}</option>
-                    {% endfor %}
+                </select><br>
+                <label for="position">وضعیت</label>
+                <select name="position" id="position" onchange="changingPos()">
+                    <option id="select_dep">لطفا گروه آموزشی مورد نظر را وارد کنید</option>
                 </select><br>
                 <input type="submit" class="btn btn-primary">
             </form>
@@ -41,21 +42,36 @@
 
 {% block script %}
     <script>
-        function DisplayMenu(obj) {
-            var obj = document.getElementById(obj);
-            obj.setAttribute("hidden", "hidden");
+        function displayMenu(obj) {
+            const object = document.getElementById(obj);
+            object.setAttribute("hidden", "hidden");
 
         }
 
-        function changing_fac() {
-            var fac_select = document.getElementById('faculty')
-            var option = fac_select.options[fac_select.selectedIndex];
-            DisplayMenu('none_fac')
-            var dep_select = document.getElementById('select_fac')
+        function changingFac() {
+            const fac_select = document.getElementById('faculty')
+            let option = fac_select.options[fac_select.selectedIndex];
+            displayMenu('none_fac')
+            const dep_select = document.getElementById('select_fac')
             dep_select.innerHTML = 'نام گروه آموزشی'
+            getDeps(option.value)
         }
-        function changing_dep(){
-            DisplayMenu('select_fac')
+
+        function changingDep() {
+            displayMenu('select_fac')
+        }
+
+        async function getDeps(faculty_name) {
+            const url = '/account/department-list/' + faculty_name + '/'
+            const response = await fetch(url)
+            const departments = await response.json()
+            loadIntoDeps(departments)
+        }
+
+        function loadIntoDeps(data){
+            for (let dep of data){
+                console.log(data[0].name)
+            }
         }
     </script>
 {% endblock %}
